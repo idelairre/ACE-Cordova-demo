@@ -120,9 +120,9 @@ const playSlideshow = function(id) {
     const rawSlide = data.slides[i - 1];
     const slide = {};
     if (rawSlide.video) {
-      slide.videoUrl = require(`file-loader!./assets/video/${rawSlide.video.id}`);
+      slide.videoUrl = require(`./assets/video/${rawSlide.video.id}`);
     } else {
-      slide.imageUrl = require(`file-loader!./assets/decks/${id}/${i}.PNG`);
+      slide.imageUrl = require(`file-loader!./assets/decks/${id}/${i}.PNG`); // we're using file-loader because the url-loader errors out on a special character
     }
     slides.push(slide);
     if (i === data.slides.length) {
