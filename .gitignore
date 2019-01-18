@@ -1,0 +1,9 @@
+/node_modules
+/bin
+/bld
+/.vs
+/.git
+/platforms
+/src/assets/decks
+/src/assets/video
+www/**/*.*

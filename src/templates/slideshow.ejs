@@ -1,0 +1,19 @@
+<header>
+    <div id="close-btn">
+        <a id="close-btn" href="#">x</a>
+    </div>
+</header>
+<div id="cbp-fwslider" class="cbp-fwslider">
+    <ul>
+      <% slides.forEach(function (slide) { %>
+      <li>
+      	<% if (slide.videoUrl) { %>
+      	<video controls>
+        	<source src="<%= slide.videoUrl %>">
+        </video>
+        <% } else { %>
+        <img src="<%= slide.imageUrl %>" alt="<%= id %>"/>
+        <% } %>
+      <% }) %>
+    </ul>
+</div>
