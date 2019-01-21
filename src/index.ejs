@@ -6,11 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="A layout example with a side menu that hides on mobile, just like the Pure website.">
     <title>ACE 2.0 Prototype</title>
+    <script type="text/javascript" src="cordova.js"></script>
 </head>
 
 <body>
     <div id="loadingCover">
-        <div id="loader" class="mdl-progress mdl-js-progress mdl-progress__indeterminate centered"></div>
+        <div id="loader" class="mdl-progress mdl-js-progress mdl-progress__indeterminate centered" style="display: none"></div>
     </div>
     <div class="wrapper">
         <header class="header"><img class="logo" src="<%= require('./assets/logo.png') %>" /></header>
