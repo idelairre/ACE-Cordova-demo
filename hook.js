@@ -7,6 +7,9 @@ const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = (context) => {
+
+  context.opts.options = context.opts.options || {};
+
   // create index of existing decks
   fs.writeFileSync('./src/assets/decks/index.json', JSON.stringify(fs.readdirSync('./src/assets/decks')), 'utf-8');
 
@@ -19,8 +22,9 @@ module.exports = (context) => {
     projectRoot
   } = context.opts;
   const {
-    release
+    release = false
   } = context.opts.options;
+
   const mode = release ? 'production' : 'development';
 
   const cordovaConfig = new ConfigParser(path.join(projectRoot, 'config.xml'));
@@ -96,26 +100,26 @@ module.exports = (context) => {
             ]
           },
           {
-            test: /\.(mp4)$/,
+            test: /\.(png|PNG|mp4|woff|woff2|eot|ttf|svg)$/,
             use: [{
               loader: 'file-loader',
               options: {
                 name: '[path][name].[ext]'
-              },
-            }, ],
-          },
-          {
-            // Load all images as base64 encoding if they are smaller than 8192 bytes
-            test: /\.(png|woff|woff2|eot|ttf|svg)$/,
-            use: [{
-              loader: 'url-loader',
-              options: {
-                // On development we want to see where the file is coming from, hence we preserve the [path]
-                name: '[path][name].[ext]',
-                limit: 8192
               }
-            }]
-          }
+            }],
+          },
+          // {
+          //   // Load all images as base64 encoding if they are smaller than 8192 bytes
+          //   test: /\.(woff|woff2|eot|ttf|svg)$/,
+          //   use: [{
+          //     loader: 'url-loader',
+          //     options: {
+          //       // On development we want to see where the file is coming from, hence we preserve the [path]
+          //       name: '[path][name].[ext]',
+          //       limit: 8192
+          //     }
+          //   }]
+          // }
         ],
       },
       plugins: [

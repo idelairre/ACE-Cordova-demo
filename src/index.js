@@ -1,18 +1,22 @@
-require('./styles/pure-min.css');
-require('./styles/material.min.css');
-require('./styles/index.scss');
+import { find } from 'lodash';
 
-const thumbnailTemplate = require('./templates/thumbnail.ejs');
-const slideshowTemplate = require('./templates/slideshow.ejs');
-const sidebarTemplate = require('./templates/sidebar.ejs');
-const videoThumbnailTemplate = require('./templates/videoThumbnail.ejs');
-const videoTemplate = require('./templates/video.ejs');
+import './styles/pure-min.css';
+import './styles/material.min.css';
+import './styles/index.scss';
 
-require('script-loader!./js/modernizr.min');
-require('./js/jquery.cbpFWSlider');
+import thumbnailTemplate from './templates/thumbnail.ejs';
+import searchDropdown from './templates/searchDropdown.ejs';
+import slideshowTemplate from './templates/slideshow.ejs';
+import sidebarTemplate from './templates/sidebar.ejs';
+// import videoThumbnailTemplate from './templates/videoThumbnail.ejs';
+// import videoTemplate from './templates/video.ejs';
 
-const json = require('./contentMetaData.json');
-const loadedDecks = require('./assets/decks/index.json');
+import 'script-loader!./js/modernizr.min';
+import './js/material.min';
+import './js/jquery.cbpFWSlider';
+
+import json from './contentMetaData.json';
+import loadedDecks from './assets/decks/index.json';
 
 const $loading = $('#loadingCover').hide();
 
@@ -44,8 +48,8 @@ for (let i = 0; json.content.length > i; i++) {
     $('.content').append(html);
     $('label#category, li#category').each(function () {
       // compare loaded slide against the json data
-      const slides = $(this).data('content');
-      if (slides.includes(json.content[i].vaultId)) {
+      const decks = $(this).data('content');
+      if (decks.includes(json.content[i].vaultId)) {
         $(this).show();
         if ($(this).prop('tagName') === 'LI') {
           $(this).parents('.category-content').siblings('label').show();
@@ -62,9 +66,9 @@ $('label#category, li#category').each(function() {
   $(this).click(function() {
     if ($selected) $selected.removeClass('selected');
     $selected = $(this).addClass('selected');
-    const slides = $(this).data('content');
+    const decks = $(this).data('content');
     $('.large-thumb').each(function() {
-      if (!slides.includes($(this).data('slide'))) {
+      if (!decks.includes($(this).data('slide'))) {
         $(this).hide();
       } else {
         $(this).show();
@@ -80,7 +84,7 @@ $('.logo').click(function() {
 
 // delegate slide show function
 $(document).on('click', '.large-thumb:not(#video)', function() {
-  const id = $(this).data('slide');
+  const id = $(this).data('deck');
   playSlideshow(id);
   $('.slider-container').show();
 });
@@ -122,16 +126,71 @@ const playSlideshow = function(id) {
     if (rawSlide.video) {
       slide.videoUrl = require(`./assets/video/${rawSlide.video.id}`);
     } else {
-      slide.imageUrl = require(`file-loader!./assets/decks/${id}/${i}.PNG`); // we're using file-loader because the url-loader errors out on a special character
+      slide.imageUrl = require(`./assets/decks/${id}/${i}.PNG`); // we're using file-loader because the url-loader errors out on a special character
     }
     slides.push(slide);
     if (i === data.slides.length) {
       $loading.hide();
     }
   }
-  const html = slideshowTemplate({
-    id,
-    slides
-  });
+  const html = slideshowTemplate({ id, slides });
   prepareSlideshow(html);
 }
+
+// search
+$('#search-expandable').on('input', function() {
+    const found = [];
+    const term = $(this).val().toLowerCase();
+    $('[data-deck]').each(function() {
+        const deck = $(this).data('deck-json');
+        const res = find(deck, function (data) {
+          return data.toString().toLowerCase().includes(term);
+        });
+        if (res) {
+          if (!found.includes(deck)) {
+            found.push(deck);
+            $(this).show();
+          }
+        } else {
+          $(this).hide();
+        }
+    });
+    const html = searchDropdown({ decks: found });
+    $('.search-results').html(html);
+    $('.search-results').show();
+    if ($('.search-results-category').not(':visible')) {
+      $('.search-results-category').data('content', found);
+      $('.search-results-category').show();
+    }
+    if ($selected) {
+      $selected.removeClass('selected');
+      $selected = $('.search-results-category').addClass('selected');
+    } else {
+      $selected = $('.search-results-category').addClass('selected');
+    }
+});
+
+$('.search-results').hide();
+
+// closes menu when you click off
+$(document).click(function(event) {
+    if (!$(event.target).closest('#search-expandable, .search-results').length) {
+        if ($('.search-results').is(':visible')) {
+            $('.search-results').hide();
+        }
+    }
+});
+
+$(document).on('click', '.mdl-list__item', function() {
+  const deck = $(this).children('.mdl-list__item-primary-content').data('deck');
+  $('#search-expandable').val(deck);
+  $('.search-results-category').data('content', deck);
+  $('div[data-deck]').each(function() {
+    if ($(this).data('deck') !== deck) {
+      $(this).hide();
+    } else {
+      $(this).show();
+    }
+  });
+  $('.search-results').hide();
+});

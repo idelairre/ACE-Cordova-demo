@@ -7,14 +7,20 @@
       "windows",
       "android",
       "ios"
-    ]
+    ],
+    "plugins": {
+      "cordova-plugin-whitelist": {}
+    }
   },
   "dependencies": {
     "cordova-android": "5.2.1",
     "cordova-ios": "4.2.0",
+    "cordova-serve": "^3.0.0",
     "cordova-windows": "~6.0.1",
     "ejs": "^2.6.1",
-    "jquery": "^3.3.1"
+    "jquery": "^3.3.1",
+    "material-design-icons": "^3.0.1",
+    "cordova-plugin-whitelist": "1"
   },
   "devDependencies": {
     "babel-core": "^6.26.3",

@@ -1,4 +1,16 @@
 @font-face {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: 400;
+  src: url('./fonts/MaterialIcons-Regular.eot'); /* For IE6-8 */
+  src: local('Material Icons'),
+    local('MaterialIcons-Regular'),
+    url('./fonts/MaterialIcons-Regular.woff2') format('woff2'),
+    url('./fonts/MaterialIcons-Regular.woff') format('woff'),
+    url('./fonts/MaterialIcons-Regular.ttf') format('truetype');
+}
+
+@font-face {
     font-family: 'Roboto';
     src: url('./fonts/Roboto-Regular-webfont.eot');
     src: url('./fonts/Roboto-Regular-webfont.eot?#iefix') format('embedded-opentype'),
@@ -108,6 +120,51 @@
     font-style: italic;
 }
 
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;  /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Support for IE. */
+  font-feature-settings: 'liga';
+}
+
+.search-results {
+  width: 300px;
+  position: absolute;
+  background: white;
+  z-index: 100;
+  top: 137px;
+  overflow-y: scroll;
+  max-height: 400px;
+  box-shadow: 5px 5px 5px #000000;
+}
+
+.mdl-list__item-primary-content {
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.mdl-list__item-sub-title {
+  font-size: 12px !important;
+}
+
 // new styles
 
 li#category {
@@ -131,10 +188,11 @@ li#category {
   color: black;
   line-height: 1.5rem;
   padding-top: 10px !important;
+  // padding-bottom: 5px;
 }
 
 .social-btn__github {
-    background-image: url("../assets/github.svg");
+    background-image: url("../assets/github.svg"); // yoink
     display: block;
     background-position: center;
     background-size: contain;
@@ -248,15 +306,16 @@ html {
     color: #fff;
     overflow: hidden;
     cursor: pointer;
+    animation: fadeIn 250ms ease-in-out alternate;
 }
 
-input {
+.category > input {
     position: absolute;
     opacity: 0;
     z-index: -1;
 }
 
-label {
+.category > label {
     position: relative;
     display: block;
     padding: 0 0 0 1em;
@@ -267,6 +326,7 @@ label {
     text-transform: uppercase;
     line-height: 3;
     cursor: pointer;
+    animation: fadeIn 250ms ease-in-out alternate;
 }
 
 .category-content {
@@ -291,11 +351,11 @@ label {
     margin: 8px 0;
 }
 /* :checked */
-input:checked ~ .category-content {
+.category > input:checked ~ .category-content {
     max-height: 26em;
 }
 /* Icon */
-label::after {
+.category > label::after {
     position: absolute;
     right: 0;
     top: 0;
@@ -309,11 +369,11 @@ label::after {
     transition: all 0.35s;
 }
 
-input[type=checkbox] + label::after {
+.category > input[type=checkbox] + label::after {
     content: "+";
 }
 
-input[type=checkbox]:checked + label::after {
+.category > input[type=checkbox]:checked + label::after {
     transform: rotate(315deg);
 }
 /* We rely on source order for mobile-first approach
@@ -353,15 +413,7 @@ input[type=checkbox]:checked + label::after {
 .large-thumb p:first-of-type {
     font-size: 100%;
 }
-/* General Demo Style */
-@import url(https://fonts.googleapis.com/css?family=Lato:300,400,700);
-@font-face {
-    font-family: 'fontawesome';
-    // src: url("../fonts/fontawesome.eot");
-    // src: url("../fonts/fontawesome.eot?#iefix") format('embedded-opentype'), url("../fonts/fontawesome.svg#fontawesome") format('svg'), url("../fonts/fontawesome.woff") format('woff'), url("../fonts/fontawesome.ttf") format('truetype');
-    font-weight: normal;
-    font-style: normal;
-}
+
 /* Clearfix hack by Nicolas Gallagher: http://nicolasgallagher.com/micro-clearfix-hack/ */
 .clearfix:after,
 .clearfix:before {
@@ -380,7 +432,6 @@ input[type=checkbox]:checked + label::after {
     left: 0;
     background: white;
     display: none;
-    animation: fadeIn 250ms ease-in-out alternate;
 }
 
 .slider-container > header {
