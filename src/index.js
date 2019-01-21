@@ -68,7 +68,7 @@ $('label#category, li#category').each(function() {
     $selected = $(this).addClass('selected');
     const decks = $(this).data('content');
     $('.large-thumb').each(function() {
-      if (!decks.includes($(this).data('slide'))) {
+      if (!decks.includes($(this).data('deck'))) {
         $(this).hide();
       } else {
         $(this).show();
