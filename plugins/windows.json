@@ -9,14 +9,7 @@
   "installed_plugins": {
     "cordova-plugin-whitelist": {
       "PACKAGE_NAME": "HelloCordova"
-    },
-    "cordova-plugin-file": {
-      "PACKAGE_NAME": "ACE 2.0 Demo"
     }
   },
-  "dependent_plugins": {
-    "cordova-plugin-compat": {
-      "PACKAGE_NAME": "ACE 2.0 Demo"
-    }
-  }
+  "dependent_plugins": {}
 }
