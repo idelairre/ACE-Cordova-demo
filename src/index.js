@@ -8,6 +8,7 @@ import thumbnailTemplate from './templates/thumbnail.ejs';
 import searchDropdown from './templates/searchDropdown.ejs';
 import slideshowTemplate from './templates/slideshow.ejs';
 import sidebarTemplate from './templates/sidebar.ejs';
+import listItemTemplate from './templates/listItemTemplate.ejs';
 
 import 'script-loader!./js/modernizr.min';
 import './js/material.min';
@@ -40,24 +41,63 @@ document.addEventListener('deviceready', function() {
     }
   });
 
+  // right menu actions
+
+  // hide menu
+  $('#hide-menu').click(function () {
+    const $nav = $('nav.vertical-nav');
+    if ($nav.is(':visible')) {
+      $nav.hide();
+      $(this).children('i').text('chevron_right')
+    } else {
+      $nav.show();
+      $(this).children('i').text('chevron_left')
+    }
+  });
+
+  // toggle gridview
+  let gridView = true;
+
+  $('#view-list').click(function () {
+    if (gridView) {
+      gridView = false;
+      $('.content').empty();
+      $('.content').append('<ul class="mdl-list deck-list-items"></ul>');
+      populateView(gridView);
+    }
+  });
+
+  $('#view-grid').click(function () {
+    if (!gridView) {
+      gridView = true;
+      $('.content').empty();
+      $('.content');
+      populateView(gridView);
+    }
+  });
+
   // fetch only the decks we've loaded
-  for (let i = 0; json.content.length > i; i++) {
-    if (loadedDecks.includes(json.content[i].vaultId)) {
-      console.log('loading thumbnail ', json.content[i].vaultId);
-      const html = thumbnailTemplate({ entry: json.content[i] });
-      $('.content').append(html);
-      $('label#category, li#category').each(function () {
-        // compare loaded slide against the json data
-        const decks = $(this).data('content');
-        if (decks.includes(json.content[i].vaultId)) {
-          $(this).show();
-          if ($(this).prop('tagName') === 'LI') {
-            $(this).parents('.category-content').siblings('label').show();
+  function populateView(gridView) {
+    for (let i = 0; json.content.length > i; i++) {
+      if (loadedDecks.includes(json.content[i].vaultId)) {
+        // load thumbnail or list-item depending on user selection
+        const html = gridView ? thumbnailTemplate({ entry: json.content[i] }) : listItemTemplate({ entry: json.content[i] });
+        gridView? $('.content').append(html) : $('ul.mdl-list').append(html);
+        $('label#category, li#category').each(function () {
+          // compare loaded slide against the json data
+          const decks = $(this).data('content');
+          if (decks.includes(json.content[i].vaultId)) {
+            $(this).show();
+            if ($(this).prop('tagName') === 'LI') {
+              $(this).parents('.category-content').siblings('label').show();
+            }
           }
-        }
-      });
+        });
+      }
     }
   }
+
+  populateView(gridView);
 
   let $selected;
 
@@ -67,7 +107,7 @@ document.addEventListener('deviceready', function() {
       if ($selected) $selected.removeClass('selected');
       $selected = $(this).addClass('selected');
       const decks = $(this).data('content');
-      $('.large-thumb').each(function() {
+      $('[data-deck-json]').each(function() {
         if (!decks.includes($(this).data('deck'))) {
           $(this).hide();
         } else {
@@ -79,11 +119,11 @@ document.addEventListener('deviceready', function() {
 
   // undo filter
   $('.logo').click(function() {
-    $('.large-thumb').show();
+    $('[data-deck-json]').show();
   });
 
   // delegate slide show function
-  $(document).on('click', '.large-thumb:not(#video)', function() {
+  $(document).on('click', '[data-deck-json]', function() {
     const id = $(this).data('deck');
     playSlideshow(id);
     $('.slider-container').show();
@@ -181,11 +221,11 @@ document.addEventListener('deviceready', function() {
       }
   });
 
-  $(document).on('click', '.mdl-list__item', function() {
+  $(document).on('click', '.search-result-item', function() {
     const deck = $(this).children('.mdl-list__item-primary-content').data('deck');
     $('#search-expandable').val(deck);
     $('.search-results-category').data('content', deck);
-    $('div[data-deck]').each(function() {
+    $('[data-deck-json]').each(function() {
       if ($(this).data('deck') !== deck) {
         $(this).hide();
       } else {
